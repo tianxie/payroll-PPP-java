@@ -19,8 +19,8 @@ public class AddCommissionedEmployeeTest {
         PaymentClassification pc = e.classification;
         assertTrue(pc instanceof CommissionedClassification);
         CommissionedClassification cc = (CommissionedClassification) pc;
-        assertEquals(2500, cc.baseRate);
-        assertEquals(9.5, cc.commissionRate);
+        assertEquals(2500, cc.baseRate());
+        assertEquals(9.5, cc.commissionRate());
 
         PaymentSchedule ps = e.schedule;
         assertTrue(ps instanceof BiweeklySchedule);
