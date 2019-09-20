@@ -7,6 +7,8 @@ public abstract class PayrollDatabase {
 
     private static Map<Integer, Employee> employees = new HashMap<>();
 
+    private static Map<Integer, Employee> members = new HashMap<>();
+
     public static void addEmployee(int empId, Employee e) {
         employees.put(empId, e);
     }
@@ -17,5 +19,13 @@ public abstract class PayrollDatabase {
 
     public static void deleteEmployee(int id) {
         employees.remove(id);
+    }
+
+    public static void addUnionMember(int memberId, Employee e) {
+        members.put(memberId, e);
+    }
+
+    public static Employee getUnionMember(int memberId) {
+        return members.get(memberId);
     }
 }
