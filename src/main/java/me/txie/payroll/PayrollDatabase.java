@@ -28,4 +28,8 @@ public abstract class PayrollDatabase {
     public static Employee getUnionMember(int memberId) {
         return members.get(memberId);
     }
+
+    public static void removeUnionMember(int memberId) {
+        members.remove(memberId);
+    }
 }
