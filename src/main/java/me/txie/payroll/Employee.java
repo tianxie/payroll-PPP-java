@@ -3,8 +3,8 @@ package me.txie.payroll;
 public class Employee {
 
     final int empId;
-    final String name;
-    final String address;
+    String name;
+    String address;
     PaymentClassification classification;
     PaymentSchedule schedule;
     PaymentMethod method;
