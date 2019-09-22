@@ -1,5 +1,7 @@
 package me.txie.payroll;
 
+import java.time.LocalDate;
+
 public class Employee {
 
     final int empId;
@@ -14,5 +16,19 @@ public class Employee {
         this.empId = empId;
         this.name = name;
         this.address = address;
+    }
+
+    public boolean isPayDate(LocalDate payDate) {
+        return schedule.isPayDate(payDate);
+    }
+
+    public void payday(Paycheck pc) {
+        double grossPay = classification.calculatePay(pc);
+        double deductions = affiliation.calculateDeductions(pc);
+        double netPay = grossPay - deductions;
+        pc.setGrossPay(grossPay);
+        pc.setDeductions(deductions);
+        pc.setNetPay(netPay);
+        method.pay(pc);
     }
 }

@@ -29,4 +29,9 @@ public class CommissionedClassification implements PaymentClassification {
     public double commissionRate() {
         return commissionRate;
     }
+
+    @Override
+    public double calculatePay(Paycheck pc) {
+        return 0;
+    }
 }

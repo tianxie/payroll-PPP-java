@@ -33,4 +33,9 @@ public class UnionAffiliation implements Affiliation {
     public double dues() {
         return dues;
     }
+
+    @Override
+    public double calculateDeductions(Paycheck pc) {
+        return 0;
+    }
 }
