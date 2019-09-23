@@ -31,4 +31,19 @@ public class Employee {
         pc.setNetPay(netPay);
         method.pay(pc);
     }
+
+    public LocalDate getPayPeriodStartDate(LocalDate date) {
+        return schedule.getPayPeriodStartDate(date);
+    }
+
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Emp#: ").append(empId).append("   ");
+        builder.append(name).append("   ");
+        builder.append(address).append("   ");
+        builder.append("Paid ").append(classification).append(" ");
+        builder.append(schedule);
+        builder.append(" by ").append(method);
+        return builder.toString();
+    }
 }

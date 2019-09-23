@@ -5,13 +5,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Paycheck {
+    private final LocalDate payPeriodStartDate;
     private final LocalDate payDate;
     private double netPay;
     private double deductions;
     private double grossPay;
     private Map<String, String> fields = new HashMap<>();
 
-    public Paycheck(LocalDate payDate) {
+    public Paycheck(LocalDate payPeriodStartDate, LocalDate payDate) {
+        this.payPeriodStartDate = payPeriodStartDate;
         this.payDate = payDate;
     }
 
@@ -49,5 +51,13 @@ public class Paycheck {
 
     public void setField(String field, String value) {
         fields.put(field, value);
+    }
+
+    public LocalDate payPeriodStartDate() {
+        return payPeriodStartDate;
+    }
+
+    public LocalDate payPeriodEndDate() {
+        return payDate;
     }
 }

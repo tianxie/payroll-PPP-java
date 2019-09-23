@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class PaydayTransaction implements Transaction {
     private final LocalDate payDate;
-    private Map<Integer, Paycheck> payckecks = new HashMap<>();
+    private Map<Integer, Paycheck> paychecks = new HashMap<>();
 
     public PaydayTransaction(LocalDate payDate) {
         this.payDate = payDate;
@@ -20,14 +20,15 @@ public class PaydayTransaction implements Transaction {
         for (int empId : empIds) {
             Employee e = PayrollDatabase.getEmployee(empId);
             if (e.isPayDate(payDate)) {
-                Paycheck pc = new Paycheck(payDate);
-                payckecks.put(empId, pc);
+                LocalDate startDate = e.getPayPeriodStartDate(payDate);
+                Paycheck pc = new Paycheck(startDate, payDate);
+                paychecks.put(empId, pc);
                 e.payday(pc);
             }
         }
     }
 
     public Paycheck getPaycheck(int empId) {
-        return payckecks.get(empId);
+        return paychecks.get(empId);
     }
 }

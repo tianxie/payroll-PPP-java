@@ -22,6 +22,26 @@ public class HourlyClassification implements PaymentClassification {
 
     @Override
     public double calculatePay(Paycheck pc) {
-        return 0;
+        double totalPay = 0.0;
+        for (TimeCard tc : timeCards.values()) {
+            if (DateUtil.isInPayPeriod(tc.date(),
+                    pc.payPeriodStartDate(),
+                    pc.payPeriodEndDate())) {
+                totalPay += calculatePayForTimeCard(tc);
+            }
+        }
+        return totalPay;
+    }
+
+    private double calculatePayForTimeCard(TimeCard tc) {
+        double overtimeHours = Math.max(0.0, tc.hours() - 8);
+        double normalHours = tc.hours() - overtimeHours;
+        return hourlyRate * normalHours +
+                hourlyRate * 1.5 * overtimeHours;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("${0}/hr", hourlyRate);
     }
 }
