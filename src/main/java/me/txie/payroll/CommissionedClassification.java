@@ -32,6 +32,18 @@ public class CommissionedClassification implements PaymentClassification {
 
     @Override
     public double calculatePay(Paycheck pc) {
-        return 0;
+        double salesTotal = 0;
+        for (SalesReceipt receipt : salesReceipts.values()) {
+            if (DateUtil.isInPayPeriod(receipt.date(),
+                    pc.payPeriodStartDate(), pc.payPeriodEndDate())) {
+                salesTotal += receipt.saleAmount();
+            }
+        }
+        return baseRate + (salesTotal * commissionRate * 0.01);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%.2f + %.2f%% sales commission", baseRate, commissionRate);
     }
 }

@@ -42,6 +42,6 @@ public class HourlyClassification implements PaymentClassification {
 
     @Override
     public String toString() {
-        return String.format("${0}/hr", hourlyRate);
+        return String.format("%.2f/hr", hourlyRate);
     }
 }

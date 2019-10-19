@@ -12,4 +12,9 @@ public class SalariedClassification implements PaymentClassification {
     public double calculatePay(Paycheck pc) {
         return salary;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%.2f", salary);
+    }
 }
