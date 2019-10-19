@@ -146,4 +146,94 @@ class PaydayTransactionTest {
         pt.execute();
         validateHourlyPaycheck(pt, empId, payDate, 2 * 15.25);
     }
+
+    @Test
+    public void testSalariedUnionMemberDues() {
+        int empId = 1;
+        AddSalariedEmployee t = new AddSalariedEmployee(empId, "Bob", "Home", 1000.00);
+        t.execute();
+
+        int memberId = 7734;
+        ChangeMemberTransaction cmt = new ChangeMemberTransaction(empId, memberId, 9.42);
+        cmt.execute();
+
+        LocalDate payDate = LocalDate.of(2001, 11, 30);
+        PaydayTransaction pt = new PaydayTransaction(payDate);
+        pt.execute();
+
+        Paycheck pc = pt.getPaycheck(empId);
+        assertNotNull(pc);
+        assertEquals(payDate, pc.payDate());
+        assertEquals(1000.00, pc.grossPay());
+        assertEquals("Hold", pc.getField("Disposition"));
+        assertEquals(47.1, pc.deductions());
+        assertEquals(1000.0 - 47.1, pc.netPay());
+    }
+
+    @Test
+    public void testHourlyUnionMembersServiceCharge() {
+        int empId = 1;
+        AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill", "Home", 15.24);
+        t.execute();
+
+        int memberId = 7734;
+        ChangeMemberTransaction cmt = new ChangeMemberTransaction(empId, memberId, 9.42);
+        cmt.execute();
+
+        LocalDate payDate = LocalDate.of(2001, 11, 9);
+        ServiceChargeTransaction sct = new ServiceChargeTransaction(memberId, payDate, 19.42);
+        sct.execute();
+
+        TimeCardTransaction tct = new TimeCardTransaction(empId, payDate, 8.0);
+        tct.execute();
+
+        PaydayTransaction pt = new PaydayTransaction(payDate);
+        pt.execute();
+
+        Paycheck pc = pt.getPaycheck(empId);
+        assertNotNull(pc);
+        assertEquals(payDate, pc.payDate());
+        assertEquals(8 * 15.24, pc.grossPay());
+        assertEquals("Hold", pc.getField("Disposition"));
+        assertEquals(9.42 + 19.42, pc.deductions());
+        assertEquals((8 * 15.24 - (9.42 + 19.42)), pc.netPay());
+    }
+
+    @Test
+    public void testServiceChargeSpanningMultiplePayPeriods() {
+        int empId = 1;
+        AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill", "Home", 15.24);
+        t.execute();
+
+        int memberId = 7734;
+        ChangeMemberTransaction cmt = new ChangeMemberTransaction(empId, memberId, 9.42);
+        cmt.execute();
+
+        LocalDate payDate = LocalDate.of(2001, 11, 9);
+        LocalDate earlyDate = LocalDate.of(2001, 11, 2); // 不到星期五
+        LocalDate lateDate = LocalDate.of(2001, 11, 16); // 下星期五
+
+        ServiceChargeTransaction sct = new ServiceChargeTransaction(memberId, payDate, 19.42);
+        sct.execute();
+
+        ServiceChargeTransaction sctEarly = new ServiceChargeTransaction(memberId, earlyDate, 100.00);
+        sctEarly.execute();
+
+        ServiceChargeTransaction sctLate = new ServiceChargeTransaction(memberId, lateDate, 200.00);
+        sctLate.execute();
+
+        TimeCardTransaction tct = new TimeCardTransaction(empId, payDate, 8.0);
+        tct.execute();
+
+        PaydayTransaction pt = new PaydayTransaction(payDate);
+        pt.execute();
+
+        Paycheck pc = pt.getPaycheck(empId);
+        assertNotNull(pc);
+        assertEquals(payDate, pc.payDate());
+        assertEquals(8 * 15.24, pc.grossPay());
+        assertEquals("Hold", pc.getField("Disposition"));
+        assertEquals(9.42 + 19.42, pc.deductions());
+        assertEquals((8 * 15.24 - (9.42 + 19.42)), pc.netPay());
+    }
 }
